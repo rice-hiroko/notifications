@@ -2,6 +2,7 @@
 fs = require 'fs-plus'
 StackTraceParser = null
 NotificationElement = require './notification-element'
+LogsPanelView = require './logs-panel-view'
 
 Notifications =
   isInitialized: false
@@ -58,6 +59,10 @@ Notifications =
             dismissable: true
           atom.notifications.addFatalError("Uncaught #{error.stack.split('\n')[0]}", options)
 
+    @logsPanelView = new LogsPanelView
+    @logsPanel = atom.workspace.addBottomPanel({item: @logsPanelView.getElement(), visible: false})
+    @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:toggle-logs', -> Notifications.toggleLogs()
+
   deactivate: ->
     @subscriptions.dispose()
     @notificationsElement?.remove()
@@ -91,6 +96,12 @@ Notifications =
       Notifications.notificationsPanelView = new NotificationsPanelView
       Notifications.notificationsPanel = atom.workspace.addBottomPanel(item: Notifications.notificationsPanelView.getElement())
 
+  toggleLogs: ->
+    if @logsPanel.isVisible()
+      @logsPanel.hide()
+    else
+      @logsPanel.show()
+
   addNotificationView: (notification) ->
     return unless notification?
     @initializeIfNotInitialized()
@@ -101,8 +112,10 @@ Notifications =
       timeSpan = notification.getTimestamp() - @lastNotification.getTimestamp()
       unless timeSpan < @duplicateTimeDelay and notification.isEqual(@lastNotification)
         @notificationsElement.appendChild(atom.views.getView(notification).element)
+        @logsPanelView.addNotification(atom.views.getView(notification).element.cloneNode(true))
     else
       @notificationsElement.appendChild(atom.views.getView(notification).element)
+      @logsPanelView.addNotification(atom.views.getView(notification).element.cloneNode(true))
 
     notification.setDisplayed(true)
     @lastNotification = notification
