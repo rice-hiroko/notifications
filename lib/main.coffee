@@ -59,8 +59,8 @@ Notifications =
           atom.notifications.addFatalError("Uncaught #{error.stack.split('\n')[0]}", options)
 
     @logsPanelView = new LogsPanelView
-    @logsPanel = atom.workspace.addBottomPanel({item: @logsPanelView.getElement(), visible: false})
-    @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:toggle-logs', -> Notifications.toggleLogs()
+    @logsPanelView.onItemClick @logsClick.bind(this)
+    @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:toggle-logs', => @logsPanelView.toggle()
 
   deactivate: ->
     @subscriptions.dispose()
@@ -76,19 +76,21 @@ Notifications =
   initializeIfNotInitialized: ->
     return if @isInitialized
 
-    @subscriptions.add atom.views.addViewProvider Notification, (model) =>
-      new NotificationElement(model, @notificationsElement)
+    @subscriptions.add atom.views.addViewProvider Notification, (model) ->
+      new NotificationElement(model)
 
     @notificationsElement = document.createElement('atom-notifications')
     atom.views.getView(atom.workspace).appendChild(@notificationsElement)
 
     @isInitialized = true
 
-  toggleLogs: ->
-    if @logsPanel.isVisible()
-      @logsPanel.hide()
-    else
-      @logsPanel.show()
+  logsClick: (notification) ->
+    element = atom.views.getView(notification).element
+    return unless element.classList.contains('remove')
+    element.classList.remove('remove')
+    element.classList.add('has-close')
+    @notificationsElement.appendChild(element)
+    @notificationsElement
 
   addNotificationView: (notification) ->
     return unless notification?
