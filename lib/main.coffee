@@ -59,7 +59,7 @@ Notifications =
             dismissable: true
           atom.notifications.addFatalError("Uncaught #{error.stack.split('\n')[0]}", options)
 
-    @notificationsLog = new NotificationsLog
+    @notificationsLog = new NotificationsLog @duplicateTimeDelay
     @subscriptions.add @notificationsLog.onItemClick @logItemClick.bind(this)
     @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:toggle-log', => @notificationsLog.toggle()
 
@@ -115,10 +115,10 @@ Notifications =
       timeSpan = notification.getTimestamp() - @lastNotification.getTimestamp()
       unless timeSpan < @duplicateTimeDelay and notification.isEqual(@lastNotification)
         @notificationsElement.appendChild(atom.views.getView(notification).element)
-        @notificationsLog.addNotification(notification)
+        @notificationsLog?.addNotification(notification)
     else
       @notificationsElement.appendChild(atom.views.getView(notification).element)
-      @notificationsLog.addNotification(notification)
+      @notificationsLog?.addNotification(notification)
 
     notification.setDisplayed(true)
     @lastNotification = notification
