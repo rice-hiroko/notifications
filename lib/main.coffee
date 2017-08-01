@@ -91,8 +91,9 @@ Notifications =
     view.makeDismissable()
 
     return unless view.element.classList.contains('remove')
-    element.classList.remove('remove')
-    @notificationsElement.appendChild(element)
+    view.element.classList.remove('remove')
+    @notificationsElement.appendChild(view.element)
+    notification.setDisplayed(true)
 
   togglePanel: ->
     if @notificationsPanel?
