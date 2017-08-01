@@ -21,6 +21,7 @@
       margin: 1px;
       padding: 0;
       color: @text-color-subtle;
+      opacity: .5;
       background: @base-background-color;
     }
   }
@@ -34,6 +35,7 @@
 
     .notifications-log-item {
       display: flex;
+      border-top: 1px solid transparent; // Keep spacing even
       border-bottom: 1px solid @base-border-color;
       max-height: @icon-size;
       overflow: hidden;
@@ -67,7 +69,8 @@
 
         .btn-toolbar {
           flex: 1 0 auto;
-          padding-top: 1px;
+          display: flex;
+          align-items: center;
           white-space: nowrap;
 
           &:empty {
@@ -89,7 +92,6 @@
         flex: 0 0 auto;
         white-space: nowrap;
         text-align: center;
-        // border-left: 1px solid @base-border-color;
         line-height: @icon-size;
         padding: 0 @component-padding;
       }
@@ -174,6 +176,7 @@
 .type(@txt; @bg) {
   &.show-type {
     color: @txt;
+    opacity: 1;
   }
 }
 
