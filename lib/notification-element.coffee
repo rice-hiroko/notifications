@@ -53,6 +53,8 @@ class NotificationElement
     @buttonListTemplate = TemplateHelper.create(ButtonListTemplate)
     @buttonTemplate = TemplateHelper.create(ButtonTemplate)
 
+    @visibilityDuration ?= @model.getOptions().timeout
+
     @element = document.createElement('atom-notification')
     @issue = new NotificationIssue(@model) if @model.getType() is 'fatal'
     @renderPromise = @render().catch (e) ->
