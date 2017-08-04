@@ -59,13 +59,17 @@ class NotificationElement
       console.error e.message
       console.error e.stack
 
+    @handleElementClick = @handleElementClick.bind(this)
+    @handleElementMouseEnter = @handleElementMouseEnter.bind(this)
+    @handleElementMouseLeave = @handleElementMouseLeave.bind(this)
+
     if @model.isDismissable()
       @model.onDidDismiss => @removeNotification()
     else
       @autohide()
-      @element.addEventListener 'click', =>
-        @makeDismissable()
-        @model.dismissed = false
+      @element.addEventListener 'click', @handleElementClick
+      @element.addEventListener 'mouseenter', @handleElementMouseEnter
+      @element.addEventListener 'mouseleave', @handleElementMouseLeave
 
     @element.issue = @issue
     @element.getRenderPromise = @getRenderPromise.bind(this)
@@ -241,11 +245,25 @@ class NotificationElement
       clearTimeout(@autohideTimeout)
       @model.options.dismissable = true
       @element.classList.add('has-close')
+      @element.classList.remove('mouse-over')
+      @element.removeEventListener 'click', @handleElementClick
+      @element.removeEventListener 'mouseenter', @handleElementMouseEnter
+      @element.removeEventListener 'mouseleave', @handleElementMouseLeave
 
   removeNotification: ->
     unless @element.classList.contains('remove')
       @element.classList.add('remove')
       @removeNotificationAfterTimeout()
+
+  handleElementClick: ->
+    @makeDismissable()
+    @model.dismissed = false
+
+  handleElementMouseEnter: ->
+    @element.classList.add('mouse-over')
+
+  handleElementMouseLeave: ->
+    @element.classList.remove('mouse-over')
 
   handleRemoveNotificationClick: ->
     @removeNotification()
@@ -270,7 +288,11 @@ class NotificationElement
 
   autohide: ->
     @autohideTimeout = setTimeout =>
-      @removeNotification()
+      if @element.classList.contains('mouse-over')
+        @makeDismissable()
+        @model.dismissed = false
+      else
+        @removeNotification()
     , @visibilityDuration
 
   removeNotificationAfterTimeout: ->
