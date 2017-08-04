@@ -61,9 +61,14 @@ class NotificationElement
 
     @model.onDidDismiss => @removeNotification()
 
+    @handleElementClick = @handleElementClick.bind(this)
+    @handleElementMouseEnter = @handleElementMouseEnter.bind(this)
+    @handleElementMouseLeave = @handleElementMouseLeave.bind(this)
     unless @model.isDismissable()
       @autohide()
-      @element.addEventListener 'click', @makeDismissable.bind(this), {once: true}
+      @element.addEventListener 'click', @handleElementClick
+      @element.addEventListener 'mouseenter', @handleElementMouseEnter
+      @element.addEventListener 'mouseleave', @handleElementMouseLeave
 
     @element.issue = @issue
     @element.getRenderPromise = @getRenderPromise.bind(this)
@@ -240,11 +245,24 @@ class NotificationElement
       @model.options.dismissable = true
       @model.dismissed = false
       @element.classList.add('has-close')
+      @element.classList.remove('mouse-over')
+      @element.removeEventListener 'click', @handleElementClick
+      @element.removeEventListener 'mouseenter', @handleElementMouseEnter
+      @element.removeEventListener 'mouseleave', @handleElementMouseLeave
 
   removeNotification: ->
     unless @element.classList.contains('remove')
       @element.classList.add('remove')
       @removeNotificationAfterTimeout()
+
+  handleElementClick: ->
+    @makeDismissable()
+
+  handleElementMouseEnter: ->
+    @element.classList.add('mouse-over')
+
+  handleElementMouseLeave: ->
+    @element.classList.remove('mouse-over')
 
   handleRemoveNotificationClick: ->
     @removeNotification()
@@ -269,7 +287,10 @@ class NotificationElement
 
   autohide: ->
     @autohideTimeout = setTimeout =>
-      @removeNotification()
+      if @element.classList.contains('mouse-over')
+        @makeDismissable()
+      else
+        @removeNotification()
     , @visibilityDuration
 
   removeNotificationAfterTimeout: ->
