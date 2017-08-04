@@ -47,6 +47,8 @@ Notifications =
     @subscriptions.add atom.commands.add 'atom-workspace', 'core:cancel', ->
       notification.dismiss() for notification in atom.notifications.getNotifications()
 
+    @subscriptions.add atom.config.observe 'notifications.defaultTimeout', (value) => @visibilityDuration = value
+
     if atom.inDevMode()
       @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:trigger-error', ->
         try
@@ -77,8 +79,8 @@ Notifications =
   initializeIfNotInitialized: ->
     return if @isInitialized
 
-    @subscriptions.add atom.views.addViewProvider Notification, (model) ->
-      new NotificationElement(model)
+    @subscriptions.add atom.views.addViewProvider Notification, (model) =>
+      new NotificationElement(model, @visibilityDuration)
 
     @notificationsElement = document.createElement('atom-notifications')
     atom.views.getView(atom.workspace).appendChild(@notificationsElement)
