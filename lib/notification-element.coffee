@@ -26,6 +26,7 @@ FatalMetaNotificationTemplate = """
   <div class="btn-toolbar">
     <a href="#" class="btn-issue btn btn-error"></a>
     <a href="#" class="btn-copy-report icon icon-clippy" title="Copy error report to clipboard"></a>
+    <a href="#" class="hidden btn-open-settings icon icon-gear" title="Open package settings"></a>
   </div>
 """
 
@@ -164,13 +165,23 @@ class NotificationElement
       @issue.getIssueBody().then (issueBody) ->
         atom.clipboard.write(issueBody)
 
+    openSettingsButton = fatalContainer.querySelector('.btn-open-settings')
+    atom.tooltips.add(openSettingsButton, title: openSettingsButton.getAttribute('title'))
+    openSettingsButton.addEventListener 'click', (e) ->
+      e.preventDefault()
+      atom.workspace.open("atom://config/packages/#{packageName}")
+
     if packageName? and repoUrl?
       fatalNotification.innerHTML = "The error was thrown from the <a href=\"#{repoUrl}\">#{packageName} package</a>. "
+      openSettingsButton.classList.remove('hidden')
     else if packageName?
       issueButton.remove()
       fatalNotification.textContent = "The error was thrown from the #{packageName} package. "
+      openSettingsButton.classList.remove('hidden')
     else
       fatalNotification.textContent = "This is likely a bug in Atom. "
+      openSettingsButton.remove()
+
 
     # We only show the create issue button if it's clearly in atom core or in a package with a repo url
     if issueButton.parentNode?
