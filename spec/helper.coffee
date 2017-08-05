@@ -25,7 +25,7 @@ module.exports =
 
       if url.indexOf('atom.io/api/packages') > -1
         return jsonPromise(options?.packageResponse ? {
-          repository: url: 'https://github.com/atom/notifications'
+          repository: url: 'https://github.com/UziTech/notifications'
           releases: latest: '0.0.0'
         })
 

@@ -18,7 +18,7 @@ class StatusBarManager
     @element.classList.add('notifications-count')
     atom.tooltips.add(@element, title: "Notifications")
     @element.appendChild(@number)
-    @element.addEventListener 'click', => atom.commands.dispatch(@element, "notifications:toggle-log")
+    @element.addEventListener 'click', => atom.commands.dispatch(@element, "notifications-plus:toggle-log")
 
     lastNotification = null
     for notification in atom.notifications.getNotifications()

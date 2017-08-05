@@ -12,7 +12,7 @@ describe "Notifications Log", ->
     atom.notifications.clear()
 
     waitsForPromise ->
-      atom.packages.activatePackage('notifications')
+      atom.packages.activatePackage('notifications-plus')
 
     waitsForPromise ->
       atom.workspace.open(NotificationsLog::getURI())
@@ -23,7 +23,7 @@ describe "Notifications Log", ->
 
   describe "when there are notifications before activation", ->
     beforeEach ->
-      atom.packages.deactivatePackage('notifications')
+      atom.packages.deactivatePackage('notifications-plus')
 
     it "displays all non displayed notifications", ->
       warning = new Notification('warning', 'Un-displayed warning')
@@ -34,7 +34,7 @@ describe "Notifications Log", ->
       atom.notifications.addNotification(warning)
 
       waitsForPromise ->
-        atom.packages.activatePackage('notifications')
+        atom.packages.activatePackage('notifications-plus')
 
       waitsForPromise ->
         atom.workspace.open(NotificationsLog::getURI())
@@ -238,11 +238,11 @@ describe "Notifications Log", ->
     beforeEach ->
       notificationsLogPane = atom.workspace.paneForURI(NotificationsLog::getURI())
 
-    describe "when notifications:toggle-log is dispatched", ->
+    describe "when notifications-plus:toggle-log is dispatched", ->
       it "toggles the pane URI", ->
         spyOn(atom.workspace, "toggle")
 
-        atom.commands.dispatch(workspaceElement, "notifications:toggle-log")
+        atom.commands.dispatch(workspaceElement, "notifications-plus:toggle-log")
         expect(atom.workspace.toggle).toHaveBeenCalledWith(NotificationsLog::getURI())
 
       describe "when the pane is destroyed", ->

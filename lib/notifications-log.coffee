@@ -65,7 +65,7 @@ module.exports = class NotificationsLog
 
   getElement: -> @element
 
-  getURI: -> 'atom://notifications/log'
+  getURI: -> 'atom://notifications-plus/log'
 
   getTitle: -> 'Log'
 
@@ -80,7 +80,7 @@ module.exports = class NotificationsLog
   serialize: ->
     return {
       @typesHidden
-      deserializer: 'notifications/NotificationsLog'
+      deserializer: 'notifications-plus/NotificationsLog'
     }
 
   toggleType: (type, force) ->
