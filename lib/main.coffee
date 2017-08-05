@@ -34,7 +34,7 @@ Notifications =
         """
         atom.notifications.addError(message, dismissable: true)
 
-      else if not atom.inDevMode() or atom.config.get('notifications.showErrorsInDevMode')
+      else if not atom.inDevMode() or atom.config.get('notifications-plus.showErrorsInDevMode')
         preventDefault()
 
         # Ignore errors with no paths in them since they are impossible to trace
@@ -50,11 +50,11 @@ Notifications =
     @subscriptions.add atom.commands.add 'atom-workspace', 'core:cancel', ->
       notification.dismiss() for notification in atom.notifications.getNotifications()
 
-    @subscriptions.add atom.config.observe 'notifications.defaultTimeout', (value) => @visibilityDuration = value
-    @subscriptions.add atom.config.observe 'notifications.disablePopups', (value) => @disablePopups = value
+    @subscriptions.add atom.config.observe 'notifications-plus.defaultTimeout', (value) => @visibilityDuration = value
+    @subscriptions.add atom.config.observe 'notifications-plus.disablePopups', (value) => @disablePopups = value
 
     if atom.inDevMode()
-      @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:trigger-error', ->
+      @subscriptions.add atom.commands.add 'atom-workspace', 'notifications-plus:trigger-error', ->
         try
           abc + 2 # nope
         catch error
@@ -66,7 +66,7 @@ Notifications =
 
     @addNotificationsLogSubscriptions() if @notificationsLog?
     @subscriptions.add atom.workspace.addOpener (uri) => @createLog() if uri is NotificationsLog::getURI()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:toggle-log', -> atom.workspace.toggle(NotificationsLog::getURI())
+    @subscriptions.add atom.commands.add 'atom-workspace', 'notifications-plus:toggle-log', -> atom.workspace.toggle(NotificationsLog::getURI())
 
   deactivate: ->
     @subscriptions.dispose()
