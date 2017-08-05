@@ -6,7 +6,7 @@
   "repository": "https://github.com/atom/notifications",
   "license": "MIT",
   "engines": {
-    "atom": ">0.50.0"
+    "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {
     "fs-plus": "^3.0.0",
@@ -34,5 +34,12 @@
   },
   "deserializers": {
     "notifications/NotificationsLog": "createLog"
+  },
+  "consumedServices": {
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "statusBarService"
+      }
+    }
   }
 }
