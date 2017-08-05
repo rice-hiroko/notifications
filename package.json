@@ -1,9 +1,9 @@
 {
-  "name": "notifications",
+  "name": "notifications-plus",
   "main": "./lib/main",
   "version": "0.69.2",
-  "description": "A tidy way to display Atom notifications.",
-  "repository": "https://github.com/atom/notifications",
+  "description": "A tidier way to display Atom notifications.",
+  "repository": "https://github.com/UziTech/notifications",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
@@ -17,7 +17,7 @@
     "temp": "^0.8.1"
   },
   "devDependencies": {
-    "coffeelint": "^1.9.7"
+    "coffeelint": "^1.16.0"
   },
   "configSchema": {
     "showErrorsInDevMode": {
