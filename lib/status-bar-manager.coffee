@@ -3,10 +3,14 @@ class StatusBarManager
   animationDuration: 500
   count: 0
 
-  constructor: (statusBar) ->
+  constructor: (statusBar, @duplicateTimeDelay) ->
+    @render()
+    @tile = statusBar.addRightTile(
+      item: @element
+      priority: 100
+    )
 
-    # TODO: add displayed notifications
-
+  render: ->
     @number = document.createElement('div')
     @number.textContent = @count
 
@@ -15,12 +19,18 @@ class StatusBarManager
     atom.tooltips.add(@element, title: "Notifications")
     @element.appendChild(@number)
     @element.addEventListener 'click', => atom.commands.dispatch(@element, "notifications:toggle-log")
-    # @element.addEventListener 'animationend', (e) => @element.classList.remove("new-notification") if e.animationName is "new-notification"
 
-    @tile = statusBar.addRightTile(
-      item: @element
-      priority: 100
-    )
+    lastNotification = null
+    for notification in atom.notifications.getNotifications()
+      if lastNotification?
+        # do not show duplicates unless some amount of time has passed
+        timeSpan = notification.getTimestamp() - lastNotification.getTimestamp()
+        unless timeSpan < @duplicateTimeDelay and notification.isEqual(lastNotification)
+          @addNotification(notification)
+      else
+        @addNotification(notification)
+
+      lastNotification = notification
 
   destroy: ->
     @tile.destroy()
