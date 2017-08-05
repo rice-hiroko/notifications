@@ -11,6 +11,7 @@ Notifications =
   duplicateTimeDelay: 500
   lastNotification: null
   statusBarManager: null
+  disablePopups: false
 
   activate: (state) ->
     CommandLogger = require './command-logger'
@@ -50,6 +51,7 @@ Notifications =
       notification.dismiss() for notification in atom.notifications.getNotifications()
 
     @subscriptions.add atom.config.observe 'notifications.defaultTimeout', (value) => @visibilityDuration = value
+    @subscriptions.add atom.config.observe 'notifications.disablePopups', (value) => @disablePopups = value
 
     if atom.inDevMode()
       @subscriptions.add atom.commands.add 'atom-workspace', 'notifications:toggle-dev-panel', -> Notifications.togglePanel()
@@ -123,19 +125,27 @@ Notifications =
     @initializeIfNotInitialized()
     return if notification.wasDisplayed()
 
+    showNotification = false
     if @lastNotification?
       # do not show duplicates unless some amount of time has passed
       timeSpan = notification.getTimestamp() - @lastNotification.getTimestamp()
       unless timeSpan < @duplicateTimeDelay and notification.isEqual(@lastNotification)
-        @notificationsElement.appendChild(atom.views.getView(notification).element)
-        @notificationsLog?.addNotification(notification)
-        @statusBarManager?.addNotification(notification)
+        showNotification = true
     else
-      @notificationsElement.appendChild(atom.views.getView(notification).element)
+      showNotification = true
+
+    if showNotification
+      view = atom.views.getView(notification)
+      if @disablePopups
+        view.element.classList.add("remove")
+        view.makeDismissable()
+        notification.dismiss()
+      else
+        @notificationsElement.appendChild(view.element)
       @notificationsLog?.addNotification(notification)
       @statusBarManager?.addNotification(notification)
 
-    notification.setDisplayed(true)
+    notification.setDisplayed(true) if showNotification and not @disablePopups
     @lastNotification = notification
 
   statusBarService: (statusBar) ->
