@@ -139,7 +139,7 @@ Notifications =
   statusBarService: (statusBar) ->
     return if @statusBarManager?
 
-    @statusBarManager = new StatusBarManager(statusBar)
+    @statusBarManager = new StatusBarManager(statusBar, @duplicateTimeDelay)
     @subscriptions.add new Disposable => @statusBarManager.destroy()
 
 isCoreOrPackageStackTrace = (stack) ->
