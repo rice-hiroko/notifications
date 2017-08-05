@@ -229,30 +229,60 @@ atom-notifications {
   }
 }
 
-// Types -------------------------------
+// Status Bar --------------------------
 
-atom-notifications {
-  atom-notification.fatal {
-    .notification(@text-color-error; @background-color-error);
-  }
+.notifications-count {
+  margin: 0 @component-padding;
+  padding: 0 @component-padding;
+  border: 1px solid @text-color;
 
-  atom-notification.error {
-    .notification(@text-color-error; @background-color-error);
-  }
-
-  atom-notification.warning {
-    .notification(@text-color-warning; @background-color-warning);
-  }
-
-  atom-notification.info {
-    .notification(@text-color-info; @background-color-info);
-  }
-
-  atom-notification.success {
-    .notification(@text-color-success; @background-color-success);
+  div {
+    display: inline-block;
+    position: relative;
   }
 }
 
+// Types -------------------------------
+
+atom-notification.fatal {
+  .notification(@text-color-error; @background-color-error);
+}
+.notifications-count[last-type='fatal'] {
+  color: @text-color-error;
+  border-color: @background-color-error;
+}
+
+atom-notification.error {
+  .notification(@text-color-error; @background-color-error);
+}
+.notifications-count[last-type='error'] {
+  color: @text-color-error;
+  border-color: @background-color-error;
+}
+
+atom-notification.warning {
+  .notification(@text-color-warning; @background-color-warning);
+}
+.notifications-count[last-type='warning'] {
+  color: @text-color-warning;
+  border-color: @background-color-warning;
+}
+
+atom-notification.info {
+  .notification(@text-color-info; @background-color-info);
+}
+.notifications-count[last-type='info'] {
+  color: @text-color-info;
+  border-color: @background-color-info;
+}
+
+atom-notification.success {
+  .notification(@text-color-success; @background-color-success);
+}
+.notifications-count[last-type='success'] {
+  color: @text-color-success;
+  border-color: @background-color-success;
+}
 
 // Mixins -------------------------------
 
@@ -311,6 +341,15 @@ atom-notifications atom-notification {
                        notification-shrink .24s .12s cubic-bezier(0.5, 0, 0, 1);
     -webkit-animation-fill-mode: forwards;
   }
+}
+
+.notifications-count .new-notification {
+  -webkit-animation: new-notification .5s ease-out;
+}
+
+@-webkit-keyframes new-notification {
+    0% { transform: scale(3); top: -.5em; }
+  100% { transform: scale(1); top: 0; }
 }
 
 @-webkit-keyframes notification-show {
