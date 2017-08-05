@@ -38,7 +38,7 @@
     }
   },
   "deserializers": {
-    "notifications/NotificationsLog": "createLog"
+    "notifications-plus/NotificationsLog": "createLog"
   },
   "consumedServices": {
     "status-bar": {

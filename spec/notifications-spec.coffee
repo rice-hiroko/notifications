@@ -12,7 +12,7 @@ describe "Notifications", ->
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
     atom.notifications.clear()
-    activationPromise = atom.packages.activatePackage('notifications')
+    activationPromise = atom.packages.activatePackage('notifications-plus')
 
     waitsForPromise ->
       activationPromise
@@ -23,7 +23,7 @@ describe "Notifications", ->
 
   describe "when there are notifications before activation", ->
     beforeEach ->
-      atom.packages.deactivatePackage('notifications')
+      atom.packages.deactivatePackage('notifications-plus')
 
     it "displays all non displayed notifications", ->
       warning = new Notification('warning', 'Un-displayed warning')
@@ -33,7 +33,7 @@ describe "Notifications", ->
       atom.notifications.addNotification(error)
       atom.notifications.addNotification(warning)
 
-      activationPromise = atom.packages.activatePackage('notifications')
+      activationPromise = atom.packages.activatePackage('notifications-plus')
       waitsForPromise ->
         activationPromise
 
@@ -353,18 +353,18 @@ describe "Notifications", ->
             expect(notificationContainer.childNodes.length).toBe 1
             expect(fatalError).toHaveClass 'has-close'
             expect(fatalError.innerHTML).toContain 'ReferenceError: a is not defined'
-            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/atom/notifications\">notifications package</a>"
-            expect(fatalError.issue.getPackageName()).toBe 'notifications'
+            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/UziTech/notifications\">notifications-plus package</a>"
+            expect(fatalError.issue.getPackageName()).toBe 'notifications-plus'
 
             button = fatalError.querySelector('.btn')
-            expect(button.textContent).toContain 'Create issue on the notifications package'
+            expect(button.textContent).toContain 'Create issue on the notifications-plus package'
 
             expect(issueTitle).toContain '$ATOM_HOME'
             expect(issueTitle).not.toContain process.env.ATOM_HOME
             expect(issueBody).toMatch /Atom\*\*: [0-9].[0-9]+.[0-9]+/ig
             expect(issueBody).not.toMatch /Unknown/ig
             expect(issueBody).toContain 'ReferenceError: a is not defined'
-            expect(issueBody).toContain 'Thrown From**: [notifications](https://github.com/atom/notifications) package '
+            expect(issueBody).toContain 'Thrown From**: [notifications-plus](https://github.com/UziTech/notifications) package '
             expect(issueBody).toContain '### Non-Core Packages'
 
             # FIXME: this doesnt work on the test server. `apm ls` is not working for some reason.
@@ -422,7 +422,7 @@ describe "Notifications", ->
             {
               "name": "linked-package",
               "version": "1.0.0",
-              "repository": "https://github.com/atom/notifications"
+              "repository": "https://github.com/UziTech/notifications"
             }
           """
           atom.packages.enablePackage('linked-package')
@@ -449,7 +449,7 @@ describe "Notifications", ->
             expect(notificationContainer.childNodes.length).toBe 1
             expect(fatalError).toHaveClass 'has-close'
             expect(fatalError.innerHTML).toContain "Uncaught ReferenceError: path is not defined"
-            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/atom/notifications\">linked-package package</a>"
+            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/UziTech/notifications\">linked-package package</a>"
             expect(fatalError.issue.getPackageName()).toBe 'linked-package'
 
       describe "when an exception is thrown from an unloaded package", ->
@@ -465,7 +465,7 @@ describe "Notifications", ->
             {
               "name": "unloaded",
               "version": "1.0.0",
-              "repository": "https://github.com/atom/notifications"
+              "repository": "https://github.com/UziTech/notifications"
             }
           """
 
@@ -484,7 +484,7 @@ describe "Notifications", ->
             expect(notificationContainer.childNodes.length).toBe 1
             expect(fatalError).toHaveClass 'has-close'
             expect(fatalError.innerHTML).toContain 'ReferenceError: unloaded error'
-            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/atom/notifications\">unloaded package</a>"
+            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/UziTech/notifications\">unloaded package</a>"
             expect(fatalError.issue.getPackageName()).toBe 'unloaded'
 
       describe "when an exception is thrown from a package trying to load", ->
@@ -499,7 +499,7 @@ describe "Notifications", ->
             {
               "name": "broken-load",
               "version": "1.0.0",
-              "repository": "https://github.com/atom/notifications"
+              "repository": "https://github.com/UziTech/notifications"
             }
           """
 
@@ -518,7 +518,7 @@ describe "Notifications", ->
             expect(notificationContainer.childNodes.length).toBe 1
             expect(fatalError).toHaveClass 'has-close'
             expect(fatalError.innerHTML).toContain "TypeError: Cannot read property 'prototype' of undefined"
-            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/atom/notifications\">broken-load package</a>"
+            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/UziTech/notifications\">broken-load package</a>"
             expect(fatalError.issue.getPackageName()).toBe 'broken-load'
 
       describe "when an exception is thrown from a package trying to load a grammar", ->
@@ -533,7 +533,7 @@ describe "Notifications", ->
             {
               "name": "language-broken-grammar",
               "version": "1.0.0",
-              "repository": "https://github.com/atom/notifications"
+              "repository": "https://github.com/UziTech/notifications"
             }
           """
 
@@ -565,7 +565,7 @@ describe "Notifications", ->
             expect(notificationContainer.childNodes.length).toBe 1
             expect(fatalError).toHaveClass 'has-close'
             expect(fatalError.innerHTML).toContain "Failed to load a language-broken-grammar package grammar"
-            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/atom/notifications\">language-broken-grammar package</a>"
+            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/UziTech/notifications\">language-broken-grammar package</a>"
             expect(fatalError.issue.getPackageName()).toBe 'language-broken-grammar'
 
       describe "when an exception is thrown from a package trying to activate", ->
@@ -580,7 +580,7 @@ describe "Notifications", ->
             {
               "name": "broken-activation",
               "version": "1.0.0",
-              "repository": "https://github.com/atom/notifications"
+              "repository": "https://github.com/UziTech/notifications"
             }
           """
 
@@ -599,7 +599,7 @@ describe "Notifications", ->
             expect(notificationContainer.childNodes.length).toBe 1
             expect(fatalError).toHaveClass 'has-close'
             expect(fatalError.innerHTML).toContain "TypeError: Cannot read property 'command' of undefined"
-            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/atom/notifications\">broken-activation package</a>"
+            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/UziTech/notifications\">broken-activation package</a>"
             expect(fatalError.issue.getPackageName()).toBe 'broken-activation'
 
       describe "when an exception is thrown from a package without a trace, but with a URL", ->
@@ -622,8 +622,8 @@ describe "Notifications", ->
 
           runs ->
             expect(fatalError.innerHTML).toContain 'ReferenceError: a is not defined'
-            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/atom/notifications\">notifications package</a>"
-            expect(fatalError.issue.getPackageName()).toBe 'notifications'
+            expect(fatalError.innerHTML).toContain "<a href=\"https://github.com/UziTech/notifications\">notifications-plus package</a>"
+            expect(fatalError.issue.getPackageName()).toBe 'notifications-plus'
 
       describe "when an exception is thrown from core", ->
         beforeEach ->
@@ -772,7 +772,7 @@ describe "Notifications", ->
           beforeEach ->
             generateFakeFetchResponses
               packageResponse:
-                repository: url: 'https://github.com/atom/notifications'
+                repository: url: 'https://github.com/UziTech/notifications'
                 releases: latest: '0.11.0'
 
           describe "when the locally installed version is lower than Atom's version", ->
@@ -865,7 +865,7 @@ describe "Notifications", ->
             expect(button.textContent).toContain 'View Issue'
             expect(button.getAttribute('href')).toBe 'http://url.com/ok'
             expect(fatalNotification.textContent).toContain 'already been reported'
-            expect(fetch.calls[0].args[0]).toContain encodeURIComponent('atom/notifications')
+            expect(fetch.calls[0].args[0]).toContain encodeURIComponent('UziTech/notifications')
 
         describe "when the issue is closed", ->
           beforeEach ->
