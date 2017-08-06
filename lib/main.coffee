@@ -11,7 +11,7 @@ Notifications =
   duplicateTimeDelay: 500
   lastNotification: null
   statusBarManager: null
-  disablePopups: false
+  allowPopups: null
 
   activate: (state) ->
     CommandLogger = require './command-logger'
@@ -51,7 +51,7 @@ Notifications =
       notification.dismiss() for notification in atom.notifications.getNotifications()
 
     @subscriptions.add atom.config.observe 'notifications-plus.defaultTimeout', (value) => @visibilityDuration = value
-    @subscriptions.add atom.config.observe 'notifications-plus.disablePopups', (value) => @disablePopups = value
+    @subscriptions.add atom.config.observe 'notifications-plus.allowPopups', (value) => @allowPopups = value
 
     if atom.inDevMode()
       @subscriptions.add atom.commands.add 'atom-workspace', 'notifications-plus:trigger-error', ->
@@ -124,16 +124,23 @@ Notifications =
 
     if showNotification
       view = atom.views.getView(notification)
-      if @disablePopups
+
+      popupAllowed = switch @allowPopups
+        when 'All' then true
+        when 'Errors' then notification.getType() in ['fatal', 'error']
+        when 'Dismissable' then notification.isDismissable()
+        else false
+
+      if popupAllowed
+        @notificationsElement.appendChild(view.element)
+      else
         view.element.classList.add("remove")
         view.makeDismissable()
         notification.dismiss()
-      else
-        @notificationsElement.appendChild(view.element)
       @notificationsLog?.addNotification(notification)
       @statusBarManager?.addNotification(notification)
 
-    notification.setDisplayed(true) if showNotification and not @disablePopups
+    notification.setDisplayed(true) if showNotification and popupAllowed
     @lastNotification = notification
 
   statusBarService: (statusBar) ->
