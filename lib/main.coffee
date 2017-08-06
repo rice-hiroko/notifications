@@ -126,10 +126,10 @@ Notifications =
       view = atom.views.getView(notification)
 
       popupAllowed = switch @allowPopups
-        when 'All' then true
+        when 'None' then false
         when 'Errors' then notification.getType() in ['fatal', 'error']
         when 'Dismissable' then notification.isDismissable()
-        else false
+        else true
 
       if popupAllowed
         @notificationsElement.appendChild(view.element)
