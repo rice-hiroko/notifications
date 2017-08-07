@@ -341,10 +341,21 @@ atom-notifications atom-notification {
                        notification-shrink .24s .12s cubic-bezier(0.5, 0, 0, 1);
     -webkit-animation-fill-mode: forwards;
   }
+
+
+  &.mouse-over .close,
+  &.has-close .close {
+    -webkit-animation: zoom-in .12s ease-out;
+  }
 }
 
 .notifications-count .new-notification {
   -webkit-animation: new-notification .5s ease-out;
+}
+
+@-webkit-keyframes zoom-in {
+    0% { transform: scale(.1); }
+  100% { transform: scale(1); }
 }
 
 @-webkit-keyframes new-notification {
