@@ -1,4 +1,4 @@
-# Notifications + package
+# Notifications+ package
 [![Build Status](https://travis-ci.org/UziTech/notifications.svg?branch=master)](https://travis-ci.org/UziTech/notifications)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/q7pdov4qeu2weee4?svg=true)](https://ci.appveyor.com/project/UziTech/notifications)
 [![Dependency Status](https://david-dm.org/UziTech/notifications.svg)](https://david-dm.org/UziTech/notifications)
