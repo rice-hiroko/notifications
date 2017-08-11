@@ -1,4 +1,4 @@
-{Notification, CompositeDisposable, Disposable} = require 'atom'
+{Notification, CompositeDisposable} = require 'atom'
 fs = require 'fs-plus'
 StackTraceParser = null
 NotificationElement = require './notification-element'
@@ -74,10 +74,12 @@ Notifications =
     @notificationsElement?.remove()
     @notificationsPanel?.destroy()
     @notificationsLog?.destroy()
+    @statusBarManager?.destroy()
 
     @subscriptions = null
     @notificationsElement = null
     @notificationsPanel = null
+    @statusBarManager = null
 
     @isInitialized = false
 
@@ -156,10 +158,7 @@ Notifications =
     @lastNotification = notification
 
   statusBarService: (statusBar) ->
-    return if @statusBarManager?
-
     @statusBarManager = new StatusBarManager(statusBar, @duplicateTimeDelay)
-    @subscriptions.add new Disposable => @statusBarManager.destroy()
 
 isCoreOrPackageStackTrace = (stack) ->
   StackTraceParser ?= require 'stacktrace-parser'
