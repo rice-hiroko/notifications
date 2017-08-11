@@ -1,6 +1,5 @@
 module.exports =
 class StatusBarManager
-  animationDuration: 500
   count: 0
 
   constructor: (statusBar, @duplicateTimeDelay) ->
@@ -13,6 +12,7 @@ class StatusBarManager
   render: ->
     @number = document.createElement('div')
     @number.textContent = @count
+    @number.addEventListener 'animationend', (e) => @number.classList.remove('new-notification') if e.animationName is 'new-notification'
 
     @element = document.createElement('span')
     @element.classList.add('notifications-count')
@@ -39,9 +39,4 @@ class StatusBarManager
   addNotification: (notification) ->
     @element.setAttribute("last-type", notification.getType())
     @number.textContent = ++@count
-    return if @number.classList.contains("new-notification")
-
     @number.classList.add("new-notification")
-    setTimeout =>
-      @number.classList.remove("new-notification")
-    , @animationDuration
