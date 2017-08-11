@@ -18,14 +18,14 @@ describe "Notifications Log", ->
       atom.workspace.open(NotificationsLog::getURI())
 
   describe "when the package is activated", ->
-    it "attaches an atom-notifications element to the dom", ->
-      expect(workspaceElement.querySelector('.notifications-log-items')).toBeDefined()
+    it "attaches an .notifications-log element to the dom", ->
+      expect(workspaceElement.querySelector('.notifications-log')).toExist()
 
   describe "when there are notifications before activation", ->
     beforeEach ->
       atom.packages.deactivatePackage('notifications-plus')
 
-    it "displays all non displayed notifications", ->
+    it "displays all notifications", ->
       warning = new Notification('warning', 'Un-displayed warning')
       error = new Notification('error', 'Displayed error')
       error.setDisplayed(true)
@@ -69,20 +69,20 @@ describe "Notifications Log", ->
 
       atom.notifications.addInfo('A message')
       expect(notificationsLogContainer.childNodes).toHaveLength 3
-      expect(notificationsLogContainer.querySelector('.notifications-log-item.info')).toBeDefined()
+      expect(notificationsLogContainer.querySelector('.notifications-log-item.info')).toExist()
 
       atom.notifications.addWarning('A message')
       expect(notificationsLogContainer.childNodes).toHaveLength 4
-      expect(notificationsLogContainer.querySelector('.notifications-log-item.warning')).toBeDefined()
+      expect(notificationsLogContainer.querySelector('.notifications-log-item.warning')).toExist()
 
       atom.notifications.addError('A message')
       expect(notificationsLogContainer.childNodes).toHaveLength 5
-      expect(notificationsLogContainer.querySelector('.notifications-log-item.error')).toBeDefined()
+      expect(notificationsLogContainer.querySelector('.notifications-log-item.error')).toExist()
 
       atom.notifications.addFatalError('A message')
       notification = notificationsLogContainer.querySelector('.notifications-log-item.fatal')
       expect(notificationsLogContainer.childNodes).toHaveLength 6
-      expect(notification).toBeDefined()
+      expect(notification).toExist()
       expect(notification.querySelector('.btn-toolbar')).not.toBeEmpty()
 
     describe "when the `buttons` options is used", ->
@@ -130,9 +130,9 @@ describe "Notifications Log", ->
         it "asks the user to create an issue", ->
           button = fatalError.querySelector('.btn')
           copyReport = fatalError.querySelector('.btn-copy-report')
-          expect(button).toBeDefined()
+          expect(button).toExist()
           expect(button.textContent).toContain 'Create issue'
-          expect(copyReport).toBeDefined()
+          expect(copyReport).toExist()
 
       describe "when the package is out of date", ->
         beforeEach ->
@@ -302,4 +302,4 @@ describe "Notifications Log", ->
               notificationsLog = paneItem
 
           runs ->
-            expect(notificationsLog).not.toBeDefined()
+            expect(notificationsLog).toBeUndefined()
