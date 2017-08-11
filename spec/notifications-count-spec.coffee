@@ -1,5 +1,4 @@
 {Notification} = require 'atom'
-StatusBarManager = require '../lib/status-bar-manager'
 {generateFakeFetchResponses, generateException} = require './helper'
 
 describe "Notifications Count", ->
@@ -54,11 +53,12 @@ describe "Notifications Count", ->
       expect(notificationsCountNumber).not.toHaveClass 'new-notification'
       atom.notifications.addInfo('A message')
       expect(notificationsCountNumber).toHaveClass 'new-notification'
-      advanceClock(StatusBarManager::animationDuration)
+
+      animationend = new AnimationEvent('animationend', {animationName: 'new-notification'})
+      notificationsCountNumber.dispatchEvent(animationend)
       expect(notificationsCountNumber).not.toHaveClass 'new-notification'
 
     it "changes the .notifications-count element last-type attribute corresponding to the type", ->
-      console.log notificationsCountContainer.getAttribute('last-type')
       atom.notifications.addSuccess('A message')
       expect(notificationsCountContainer.getAttribute('last-type')).toBe 'success'
 
