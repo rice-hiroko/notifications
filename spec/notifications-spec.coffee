@@ -17,17 +17,12 @@ describe "Notifications", ->
     waitsForPromise ->
       activationPromise
 
-  describe "when the package is activated", ->
-    it "attaches an atom-notifications element to the dom", ->
-      expect(workspaceElement.querySelector('atom-notifications')).toBeDefined()
-
   describe "when there are notifications before activation", ->
     beforeEach ->
       waitsForPromise ->
         # Wrapped in Promise.resolve so this test continues to work on earlier versions of Atom
         Promise.resolve(atom.packages.deactivatePackage('notifications-plus'))
 
-    it "displays all non displayed notifications", ->
       warning = new Notification('warning', 'Un-displayed warning')
       error = new Notification('error', 'Displayed error')
       error.setDisplayed(true)
@@ -35,16 +30,15 @@ describe "Notifications", ->
       atom.notifications.addNotification(error)
       atom.notifications.addNotification(warning)
 
-      activationPromise = atom.packages.activatePackage('notifications-plus')
       waitsForPromise ->
-        activationPromise
+        atom.packages.activatePackage('notifications-plus')
 
-      runs ->
-        notificationContainer = workspaceElement.querySelector('atom-notifications')
-        notification = notificationContainer.querySelector('atom-notification.warning')
-        expect(notification).toExist()
-        notification = notificationContainer.querySelector('atom-notification.error')
-        expect(notification).not.toExist()
+    it "displays all non displayed notifications", ->
+      notificationContainer = workspaceElement.querySelector('atom-notifications')
+      notification = notificationContainer.querySelector('atom-notification.warning')
+      expect(notification).toExist()
+      notification = notificationContainer.querySelector('atom-notification.error')
+      expect(notification).not.toExist()
 
   describe "when notifications are added to atom.notifications", ->
     notificationContainer = null
@@ -71,19 +65,19 @@ describe "Notifications", ->
 
       atom.notifications.addInfo('A message')
       expect(notificationContainer.childNodes.length).toBe 2
-      expect(notificationContainer.querySelector('atom-notification.info')).toBeDefined()
+      expect(notificationContainer.querySelector('atom-notification.info')).toExist()
 
       atom.notifications.addWarning('A message')
       expect(notificationContainer.childNodes.length).toBe 3
-      expect(notificationContainer.querySelector('atom-notification.warning')).toBeDefined()
+      expect(notificationContainer.querySelector('atom-notification.warning')).toExist()
 
       atom.notifications.addError('A message')
       expect(notificationContainer.childNodes.length).toBe 4
-      expect(notificationContainer.querySelector('atom-notification.error')).toBeDefined()
+      expect(notificationContainer.querySelector('atom-notification.error')).toExist()
 
       atom.notifications.addFatalError('A message')
       expect(notificationContainer.childNodes.length).toBe 5
-      expect(notificationContainer.querySelector('atom-notification.fatal')).toBeDefined()
+      expect(notificationContainer.querySelector('atom-notification.fatal')).toExist()
 
     it "displays notification with a detail when a detail is specified", ->
       atom.notifications.addInfo('A message', detail: 'Some detail')
@@ -187,13 +181,15 @@ describe "Notifications", ->
           expect(atom.views.getView(atom.workspace.getActiveTextEditor())).toHaveFocus()
 
     describe "when an autoclose notification is added", ->
-      notification = null
+      [notification, closeButton] = []
 
       beforeEach ->
         atom.notifications.addSuccess('A message')
         notification = notificationContainer.querySelector('atom-notification.success')
+        closeButton = notification.querySelector('.close')
 
       it "closes and removes the message after a given amount of time", ->
+        expect(closeButton).not.toBeVisible()
         expect(notification).not.toHaveClass 'remove'
 
         advanceClock(NotificationElement::visibilityDuration)
@@ -208,12 +204,61 @@ describe "Notifications", ->
           notification.click()
 
         it "makes the notification dismissable", ->
+          expect(closeButton).toBeVisible()
           expect(notification).toHaveClass 'has-close'
 
           advanceClock(NotificationElement::visibilityDuration)
           expect(notification).not.toHaveClass 'remove'
 
+      describe "when the mouse is hovering over the notification", ->
+        beforeEach ->
+          event = new MouseEvent("mouseenter")
+          notification.dispatchEvent(event)
 
+        it "shows the close button", ->
+          expect(closeButton).toBeVisible()
+
+        it "makes the notification dismissable if hovering past close timeout", ->
+          advanceClock(NotificationElement::visibilityDuration)
+          expect(closeButton).toBeVisible()
+          expect(notification).toHaveClass 'has-close'
+          expect(notification).not.toHaveClass 'remove'
+
+        describe "when the mouse leaves before the close timeout", ->
+          beforeEach ->
+            event = new MouseEvent("mouseleave")
+            notification.dispatchEvent(event)
+
+            it "dismisses the notification after the close timeout", ->
+              expect(closeButton).not.toBeVisible()
+              advanceClock(NotificationElement::visibilityDuration)
+              expect(notification).toHaveClass 'remove'
+
+    describe "when the default timeout setting is changed", ->
+      [notification] = []
+
+      beforeEach ->
+        atom.config.set("notifications-plus.defaultTimeout", 1000)
+        atom.notifications.addSuccess('A message')
+        notification = notificationContainer.querySelector('atom-notification.success')
+
+      it "uses the setting value for the autoclose timeout", ->
+        expect(notification).not.toHaveClass 'remove'
+        advanceClock(1000)
+        expect(notification).toHaveClass 'remove'
+
+      describe "when the 'timeout' option is used", ->
+
+        beforeEach ->
+          atom.notifications.addInfo('A message', {timeout: 10000})
+          notification = notificationContainer.querySelector('atom-notification.info')
+
+        it "uses the 'timeout' value for the autoclose timeout", ->
+          expect(notification).not.toHaveClass 'remove'
+          advanceClock(NotificationElement::visibilityDuration)
+          expect(notification).not.toHaveClass 'remove'
+          advanceClock(10000 - NotificationElement::visibilityDuration)
+          expect(notification).toHaveClass 'remove'
 
     describe "when the `description` option is used", ->
       it "displays the description text in the .description element", ->
@@ -360,6 +405,10 @@ describe "Notifications", ->
 
             button = fatalError.querySelector('.btn')
             expect(button.textContent).toContain 'Create issue on the notifications-plus package'
+            buttonCopyReport = fatalError.querySelector('.btn-copy-report')
+            expect(buttonCopyReport).toExist()
+            buttonOpenSettings = fatalError.querySelector('.btn-open-settings')
+            expect(buttonOpenSettings).toExist()
 
             expect(issueTitle).toContain '$ATOM_HOME'
             expect(issueTitle).not.toContain process.env.ATOM_HOME
@@ -650,7 +699,7 @@ describe "Notifications", ->
 
         it "displays a fatal error with the package name in the error", ->
           expect(notificationContainer.childNodes.length).toBe 1
-          expect(fatalError).toBeDefined()
+          expect(fatalError).toExist()
           expect(fatalError).toHaveClass 'has-close'
           expect(fatalError.innerHTML).toContain 'ReferenceError: a is not defined'
           expect(fatalError.innerHTML).toContain 'bug in Atom'
@@ -658,6 +707,10 @@ describe "Notifications", ->
 
           button = fatalError.querySelector('.btn')
           expect(button.textContent).toContain 'Create issue on atom/atom'
+          buttonCopyReport = fatalError.querySelector('.btn-copy-report')
+          expect(buttonCopyReport).toExist()
+          buttonOpenSettings = fatalError.querySelector('.btn-open-settings')
+          expect(buttonOpenSettings).not.toExist()
 
           expect(issueBody).toContain 'ReferenceError: a is not defined'
           expect(issueBody).toContain '**Thrown From**: Atom Core'
@@ -929,3 +982,129 @@ describe "Notifications", ->
             notificationContainer = workspaceElement.querySelector('atom-notifications')
             error = notificationContainer.querySelector('atom-notification.fatal')
             expect(error).toExist()
+
+    describe "when the Allow Popups setting is set", ->
+
+      describe "when it is set to None", ->
+        beforeEach ->
+          atom.config.set('notifications-plus.allowPopups', 'None')
+
+        it "will not display any notifications", ->
+          expect(notificationContainer.childNodes.length).toBe 0
+
+          notification = atom.notifications.addSuccess('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addSuccess('A message', dismissable: true)
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addInfo('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addWarning('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addError('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addFatalError('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+      describe "when it is set to Errors", ->
+        beforeEach ->
+          atom.config.set('notifications-plus.allowPopups', 'Errors')
+
+        it "will only display error and fatal notifications", ->
+          expect(notificationContainer.childNodes.length).toBe 0
+
+          notification = atom.notifications.addSuccess('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addSuccess('A message', dismissable: true)
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addInfo('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addWarning('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addError('A message')
+          expect(notificationContainer.childNodes.length).toBe 1
+          expect(notification.wasDisplayed()).toBe true
+
+          notification = atom.notifications.addFatalError('A message')
+          expect(notificationContainer.childNodes.length).toBe 2
+          expect(notification.wasDisplayed()).toBe true
+
+      describe "when it is set to Dismissable", ->
+        beforeEach ->
+          atom.config.set('notifications-plus.allowPopups', 'Dismissable')
+
+        it "will only display dismissable notifications", ->
+          expect(notificationContainer.childNodes.length).toBe 0
+
+          notification = atom.notifications.addSuccess('A message')
+          expect(notificationContainer.childNodes.length).toBe 0
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addSuccess('A dismissable message', dismissable: true)
+          expect(notificationContainer.childNodes.length).toBe 1
+          expect(notification.wasDisplayed()).toBe true
+
+          notification = atom.notifications.addInfo('A message')
+          expect(notificationContainer.childNodes.length).toBe 1
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addWarning('A message')
+          expect(notificationContainer.childNodes.length).toBe 1
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addError('A message')
+          expect(notificationContainer.childNodes.length).toBe 1
+          expect(notification.wasDisplayed()).toBe false
+
+          notification = atom.notifications.addFatalError('A message')
+          expect(notificationContainer.childNodes.length).toBe 1
+          expect(notification.wasDisplayed()).toBe false
+
+      describe "when it is set to anything else", ->
+        beforeEach ->
+          atom.config.set('notifications-plus.allowPopups', 'anything else')
+
+        it "will display all notifications", ->
+          expect(notificationContainer.childNodes.length).toBe 0
+
+          notification = atom.notifications.addSuccess('A message')
+          expect(notificationContainer.childNodes.length).toBe 1
+          expect(notification.wasDisplayed()).toBe true
+
+          notification = atom.notifications.addSuccess('A dismissable message', dismissable: true)
+          expect(notificationContainer.childNodes.length).toBe 2
+          expect(notification.wasDisplayed()).toBe true
+
+          notification = atom.notifications.addInfo('A message')
+          expect(notificationContainer.childNodes.length).toBe 3
+          expect(notification.wasDisplayed()).toBe true
+
+          notification = atom.notifications.addWarning('A message')
+          expect(notificationContainer.childNodes.length).toBe 4
+          expect(notification.wasDisplayed()).toBe true
+
+          notification = atom.notifications.addError('A message')
+          expect(notificationContainer.childNodes.length).toBe 5
+          expect(notification.wasDisplayed()).toBe true
+
+          notification = atom.notifications.addFatalError('A message')
+          expect(notificationContainer.childNodes.length).toBe 6
+          expect(notification.wasDisplayed()).toBe true
