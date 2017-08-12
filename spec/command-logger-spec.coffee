@@ -56,18 +56,18 @@ describe 'CommandLogger', ->
   describe 'formatting of text log', ->
     it 'does not output empty log items', ->
       expect(logger.getText()).toBe """
-        ```
-        ```
-      """
+                                      ```
+                                      ```
+                                    """
 
     it 'formats commands with the time, name and target', ->
       dispatch('foo:bar')
 
       expect(logger.getText()).toBe """
-        ```
-             -0:00.0 foo:bar (section#some-id.some-class.another-class)
-        ```
-      """
+                                      ```
+                                           -0:00.0 foo:bar (section#some-id.some-class.another-class)
+                                      ```
+                                    """
 
     it 'omits the target ID if it has none', ->
       element.id = ""
@@ -75,10 +75,10 @@ describe 'CommandLogger', ->
       dispatch('foo:bar')
 
       expect(logger.getText()).toBe """
-        ```
-             -0:00.0 foo:bar (section.some-class.another-class)
-        ```
-      """
+                                      ```
+                                           -0:00.0 foo:bar (section.some-class.another-class)
+                                      ```
+                                    """
 
     it 'formats commands in chronological order', ->
       dispatch('foo:first')
@@ -86,22 +86,22 @@ describe 'CommandLogger', ->
       dispatch('foo:third')
 
       expect(logger.getText()).toBe """
-        ```
-             -0:00.0 foo:first (section#some-id.some-class.another-class)
-             -0:00.0 foo:second (section#some-id.some-class.another-class)
-             -0:00.0 foo:third (section#some-id.some-class.another-class)
-        ```
-      """
+                                      ```
+                                           -0:00.0 foo:first (section#some-id.some-class.another-class)
+                                           -0:00.0 foo:second (section#some-id.some-class.another-class)
+                                           -0:00.0 foo:third (section#some-id.some-class.another-class)
+                                      ```
+                                    """
 
     it 'displays a multiplier for repeated commands', ->
       dispatch('foo:bar')
       dispatch('foo:bar')
 
       expect(logger.getText()).toBe """
-        ```
-          2x -0:00.0 foo:bar (section#some-id.some-class.another-class)
-        ```
-      """
+                                      ```
+                                        2x -0:00.0 foo:bar (section#some-id.some-class.another-class)
+                                      ```
+                                    """
 
     it 'logs the external data event as the last event', ->
       dispatch('foo:bar')
@@ -110,11 +110,11 @@ describe 'CommandLogger', ->
         title: 'bummer'
 
       expect(logger.getText(event)).toBe """
-        ```
-             -0:00.0 foo:bar (section#some-id.some-class.another-class)
-             -0:00.0 bummer
-        ```
-      """
+                                           ```
+                                                -0:00.0 foo:bar (section#some-id.some-class.another-class)
+                                                -0:00.0 bummer
+                                           ```
+                                         """
 
     it 'does not report anything older than ten minutes', ->
       logger.logCommand
@@ -127,15 +127,15 @@ describe 'CommandLogger', ->
         target: nodeName: 'DIV'
 
       expect(logger.getText()).toBe """
-        ```
-             -0:00.0 wow:bummer (div)
-        ```
-      """
+                                      ```
+                                           -0:00.0 wow:bummer (div)
+                                      ```
+                                    """
 
     it 'does not report commands that have no name', ->
       dispatch('')
 
       expect(logger.getText()).toBe """
-        ```
-        ```
-      """
+                                      ```
+                                      ```
+                                    """

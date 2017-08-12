@@ -8,39 +8,39 @@ TemplateHelper = require './template-helper'
 UserUtilities = require './user-utilities'
 
 NotificationTemplate = """
-  <div class="content">
-    <div class="message item"></div>
-    <div class="detail item">
-      <div class="detail-content"></div>
-      <a href="#" class="stack-toggle"></a>
-      <div class="stack-container"></div>
-    </div>
-    <div class="meta item"></div>
-  </div>
-  <div class="close icon icon-x"></div>
-  <div class="close-all btn btn-error">Close All</div>
-"""
+                         <div class="content">
+                           <div class="message item"></div>
+                           <div class="detail item">
+                             <div class="detail-content"></div>
+                             <a href="#" class="stack-toggle"></a>
+                             <div class="stack-container"></div>
+                           </div>
+                           <div class="meta item"></div>
+                         </div>
+                         <div class="close icon icon-x"></div>
+                         <div class="close-all btn btn-error">Close All</div>
+                       """
 
 FatalMetaNotificationTemplate = """
-  <div class="description fatal-notification"></div>
-  <div class="btn-toolbar">
-    <a href="#" class="btn-issue btn btn-error"></a>
-    <a href="#" class="btn-copy-report icon icon-clippy" title="Copy error report to clipboard"></a>
-    <a href="#" class="hidden btn-open-settings icon icon-gear" title="Open package settings"></a>
-  </div>
-"""
+                                  <div class="description fatal-notification"></div>
+                                  <div class="btn-toolbar">
+                                    <a href="#" class="btn-issue btn btn-error"></a>
+                                    <a href="#" class="btn-copy-report icon icon-clippy" title="Copy error report to clipboard"></a>
+                                    <a href="#" class="hidden btn-open-settings icon icon-gear" title="Open package settings"></a>
+                                  </div>
+                                """
 
 MetaNotificationTemplate = """
-  <div class="description"></div>
-"""
+                             <div class="description"></div>
+                           """
 
 ButtonListTemplate = """
-  <div class="btn-toolbar"></div>
-"""
+                       <div class="btn-toolbar"></div>
+                     """
 
 ButtonTemplate = """
-  <a href="#" class="btn"></a>
-"""
+                   <a href="#" class="btn"></a>
+                 """
 
 module.exports =
 class NotificationElement
@@ -212,34 +212,34 @@ class NotificationElement
             atom.commands.dispatch(atom.views.getView(atom.workspace), command)
 
           fatalNotification.innerHTML += """
-            <code>#{packageName}</code> is out of date: #{packageCheck.installedVersion} installed;
-            #{packageCheck.latestVersion} latest.
-            Upgrading to the latest version may fix this issue.
-          """
+                                           <code>#{packageName}</code> is out of date: #{packageCheck.installedVersion} installed;
+                                           #{packageCheck.latestVersion} latest.
+                                           Upgrading to the latest version may fix this issue.
+                                         """
         else if packageCheck? and not packageCheck.upToDate and packageCheck.isCore
           issueButton.remove()
 
           fatalNotification.innerHTML += """
-            <br><br>
-            Locally installed core Atom package <code>#{packageName}</code> is out of date: #{packageCheck.installedVersion} installed locally;
-            #{packageCheck.versionShippedWithAtom} included with the version of Atom you're running.
-            Removing the locally installed version may fix this issue.
-          """
+                                           <br><br>
+                                           Locally installed core Atom package <code>#{packageName}</code> is out of date: #{packageCheck.installedVersion} installed locally;
+                                           #{packageCheck.versionShippedWithAtom} included with the version of Atom you're running.
+                                           Removing the locally installed version may fix this issue.
+                                         """
 
           packagePath = atom.packages.getLoadedPackage(packageName)?.path
           if fs.isSymbolicLinkSync(packagePath)
             fatalNotification.innerHTML += """
-            <br><br>
-            Use: <code>apm unlink #{packagePath}</code>
-          """
+                                             <br><br>
+                                             Use: <code>apm unlink #{packagePath}</code>
+                                           """
         else if atomCheck? and not atomCheck.upToDate
           issueButton.remove()
 
           fatalNotification.innerHTML += """
-            Atom is out of date: #{atomCheck.installedVersion} installed;
-            #{atomCheck.latestVersion} latest.
-            Upgrading to the <a href='https://github.com/atom/atom/releases/tag/v#{atomCheck.latestVersion}'>latest version</a> may fix this issue.
-          """
+                                           Atom is out of date: #{atomCheck.installedVersion} installed;
+                                           #{atomCheck.latestVersion} latest.
+                                           Upgrading to the <a href='https://github.com/atom/atom/releases/tag/v#{atomCheck.latestVersion}'>latest version</a> may fix this issue.
+                                         """
         else
           fatalNotification.innerHTML += " You can help by creating an issue. Please explain what actions triggered this error."
           issueButton.addEventListener 'click', (e) =>
