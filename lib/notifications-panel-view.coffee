@@ -52,10 +52,10 @@ class NotificationsPanelView
     options =
       dismissable: true
       detail: """
-        line 6: unexpected newline
-        'metrics'::
-        ^
-      """
+                line 6: unexpected newline
+                'metrics'::
+                ^
+              """
     atom.notifications.addError(message, options)
 
   createWarning: ->

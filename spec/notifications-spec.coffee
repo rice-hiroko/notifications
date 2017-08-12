@@ -357,14 +357,14 @@ describe "Notifications", ->
       describe "when there are multiple packages in the stack trace", ->
         beforeEach ->
           stack = """
-            TypeError: undefined is not a function
-              at Object.module.exports.Pane.promptToSaveItem [as defaultSavePrompt] (/Applications/Atom.app/Contents/Resources/app/src/pane.js:490:23)
-              at Pane.promptToSaveItem (/Users/someguy/.atom/packages/save-session/lib/save-prompt.coffee:21:15)
-              at Pane.module.exports.Pane.destroyItem (/Applications/Atom.app/Contents/Resources/app/src/pane.js:442:18)
-              at HTMLDivElement.<anonymous> (/Applications/Atom.app/Contents/Resources/app/node_modules/tabs/lib/tab-bar-view.js:174:22)
-              at space-pen-ul.jQuery.event.dispatch (/Applications/Atom.app/Contents/Resources/app/node_modules/archive-view/node_modules/atom-space-pen-views/node_modules/space-pen/vendor/jquery.js:4676:9)
-              at space-pen-ul.elemData.handle (/Applications/Atom.app/Contents/Resources/app/node_modules/archive-view/node_modules/atom-space-pen-views/node_modules/space-pen/vendor/jquery.js:4360:46)
-          """
+                    TypeError: undefined is not a function
+                      at Object.module.exports.Pane.promptToSaveItem [as defaultSavePrompt] (/Applications/Atom.app/Contents/Resources/app/src/pane.js:490:23)
+                      at Pane.promptToSaveItem (/Users/someguy/.atom/packages/save-session/lib/save-prompt.coffee:21:15)
+                      at Pane.module.exports.Pane.destroyItem (/Applications/Atom.app/Contents/Resources/app/src/pane.js:442:18)
+                      at HTMLDivElement.<anonymous> (/Applications/Atom.app/Contents/Resources/app/node_modules/tabs/lib/tab-bar-view.js:174:22)
+                      at space-pen-ul.jQuery.event.dispatch (/Applications/Atom.app/Contents/Resources/app/node_modules/archive-view/node_modules/atom-space-pen-views/node_modules/space-pen/vendor/jquery.js:4676:9)
+                      at space-pen-ul.elemData.handle (/Applications/Atom.app/Contents/Resources/app/node_modules/archive-view/node_modules/atom-space-pen-views/node_modules/space-pen/vendor/jquery.js:4360:46)
+                  """
           detail = 'ok'
 
           atom.notifications.addFatalError('TypeError: undefined', {detail, stack})
@@ -470,22 +470,22 @@ describe "Notifications", ->
           fs.makeTreeSync path.dirname(path.join(packagesDir, 'linked-package'))
           fs.symlinkSync(packageDir, path.join(packagesDir, 'linked-package'), 'junction')
           fs.writeFileSync path.join(packageDir, 'package.json'), """
-            {
-              "name": "linked-package",
-              "version": "1.0.0",
-              "repository": "https://github.com/UziTech/notifications"
-            }
-          """
+                                                                    {
+                                                                      "name": "linked-package",
+                                                                      "version": "1.0.0",
+                                                                      "repository": "https://github.com/UziTech/notifications"
+                                                                    }
+                                                                  """
           atom.packages.enablePackage('linked-package')
 
           stack = """
-            ReferenceError: path is not defined
-              at Object.module.exports.LinkedPackage.wow (#{path.join(fs.realpathSync(packageDir), 'linked-package.coffee')}:29:15)
-              at atom-workspace.subscriptions.add.atom.commands.add.linked-package:wow (#{path.join(packageDir, 'linked-package.coffee')}:18:102)
-              at CommandRegistry.module.exports.CommandRegistry.handleCommandEvent (/Applications/Atom.app/Contents/Resources/app/src/command-registry.js:238:29)
-              at /Applications/Atom.app/Contents/Resources/app/src/command-registry.js:3:61
-              at CommandPaletteView.module.exports.CommandPaletteView.confirmed (/Applications/Atom.app/Contents/Resources/app/node_modules/command-palette/lib/command-palette-view.js:159:32)
-          """
+                    ReferenceError: path is not defined
+                      at Object.module.exports.LinkedPackage.wow (#{path.join(fs.realpathSync(packageDir), 'linked-package.coffee')}:29:15)
+                      at atom-workspace.subscriptions.add.atom.commands.add.linked-package:wow (#{path.join(packageDir, 'linked-package.coffee')}:18:102)
+                      at CommandRegistry.module.exports.CommandRegistry.handleCommandEvent (/Applications/Atom.app/Contents/Resources/app/src/command-registry.js:238:29)
+                      at /Applications/Atom.app/Contents/Resources/app/src/command-registry.js:3:61
+                      at CommandPaletteView.module.exports.CommandPaletteView.confirmed (/Applications/Atom.app/Contents/Resources/app/node_modules/command-palette/lib/command-palette-view.js:159:32)
+                  """
           detail = "At #{path.join(packageDir, 'linked-package.coffee')}:41"
           message = "Uncaught ReferenceError: path is not defined"
           atom.notifications.addFatalError(message, {stack, detail, dismissable: true})
@@ -513,12 +513,12 @@ describe "Notifications", ->
           atom.packages.packageDirPaths.push(path.join(packagesDir, '.atom', 'packages'))
           packageDir = path.join(packagesDir, '.atom', 'packages', 'unloaded')
           fs.writeFileSync path.join(packageDir, 'package.json'), """
-            {
-              "name": "unloaded",
-              "version": "1.0.0",
-              "repository": "https://github.com/UziTech/notifications"
-            }
-          """
+                                                                    {
+                                                                      "name": "unloaded",
+                                                                      "version": "1.0.0",
+                                                                      "repository": "https://github.com/UziTech/notifications"
+                                                                    }
+                                                                  """
 
           stack = "Error\n  at #{path.join(packageDir, 'index.js')}:1:1"
           detail = 'ReferenceError: unloaded error'
@@ -547,12 +547,12 @@ describe "Notifications", ->
           atom.packages.packageDirPaths.push(path.join(packagesDir, '.atom', 'packages'))
           packageDir = path.join(packagesDir, '.atom', 'packages', 'broken-load')
           fs.writeFileSync path.join(packageDir, 'package.json'), """
-            {
-              "name": "broken-load",
-              "version": "1.0.0",
-              "repository": "https://github.com/UziTech/notifications"
-            }
-          """
+                                                                    {
+                                                                      "name": "broken-load",
+                                                                      "version": "1.0.0",
+                                                                      "repository": "https://github.com/UziTech/notifications"
+                                                                    }
+                                                                  """
 
           stack = "TypeError: Cannot read property 'prototype' of undefined\n  at __extends (<anonymous>:1:1)\n  at Object.defineProperty.value [as .coffee] (/Applications/Atom.app/Contents/Resources/app.asar/src/compile-cache.js:169:21)"
           detail = "TypeError: Cannot read property 'prototype' of undefined"
@@ -581,28 +581,28 @@ describe "Notifications", ->
           atom.packages.packageDirPaths.push(path.join(packagesDir, '.atom', 'packages'))
           packageDir = path.join(packagesDir, '.atom', 'packages', 'language-broken-grammar')
           fs.writeFileSync path.join(packageDir, 'package.json'), """
-            {
-              "name": "language-broken-grammar",
-              "version": "1.0.0",
-              "repository": "https://github.com/UziTech/notifications"
-            }
-          """
+                                                                    {
+                                                                      "name": "language-broken-grammar",
+                                                                      "version": "1.0.0",
+                                                                      "repository": "https://github.com/UziTech/notifications"
+                                                                    }
+                                                                  """
 
           stack = """
-            Unexpected string
-              at nodeTransforms.Literal (/usr/share/atom/resources/app/node_modules/season/node_modules/cson-parser/lib/parse.js:100:15)
-              at #{path.join('packageDir', 'grammars', 'broken-grammar.cson')}:1:1
-          """
+                    Unexpected string
+                      at nodeTransforms.Literal (/usr/share/atom/resources/app/node_modules/season/node_modules/cson-parser/lib/parse.js:100:15)
+                      at #{path.join('packageDir', 'grammars', 'broken-grammar.cson')}:1:1
+                  """
           detail = """
-            At Syntax error on line 241, column 18: evalmachine.<anonymous>:1
-            "#\\{" "end": "\\}"
-                   ^^^^^
-            Unexpected string in #{path.join('packageDir', 'grammars', 'broken-grammar.cson')}
+                     At Syntax error on line 241, column 18: evalmachine.<anonymous>:1
+                     "#\\{" "end": "\\}"
+                            ^^^^^
+                     Unexpected string in #{path.join('packageDir', 'grammars', 'broken-grammar.cson')}
 
-            SyntaxError: Syntax error on line 241, column 18: evalmachine.<anonymous>:1
-            "#\\{" "end": "\\}"
-                   ^^^^^
-          """
+                     SyntaxError: Syntax error on line 241, column 18: evalmachine.<anonymous>:1
+                     "#\\{" "end": "\\}"
+                            ^^^^^
+                   """
           message = "Failed to load a language-broken-grammar package grammar"
           atom.notifications.addFatalError(message, {stack, detail, packageName: 'language-broken-grammar', dismissable: true})
           notificationContainer = workspaceElement.querySelector('atom-notifications')
@@ -628,12 +628,12 @@ describe "Notifications", ->
           atom.packages.packageDirPaths.push(path.join(packagesDir, '.atom', 'packages'))
           packageDir = path.join(packagesDir, '.atom', 'packages', 'broken-activation')
           fs.writeFileSync path.join(packageDir, 'package.json'), """
-            {
-              "name": "broken-activation",
-              "version": "1.0.0",
-              "repository": "https://github.com/UziTech/notifications"
-            }
-          """
+                                                                    {
+                                                                      "name": "broken-activation",
+                                                                      "version": "1.0.0",
+                                                                      "repository": "https://github.com/UziTech/notifications"
+                                                                    }
+                                                                  """
 
           stack = "TypeError: Cannot read property 'command' of undefined\n  at Object.module.exports.activate (<anonymous>:7:23)\n  at Package.module.exports.Package.activateNow (/Applications/Atom.app/Contents/Resources/app.asar/src/package.js:232:19)"
           detail = "TypeError: Cannot read property 'command' of undefined"
