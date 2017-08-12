@@ -101,39 +101,39 @@ class NotificationIssue
           packageMessage = 'Atom Core'
 
         @issueBody = """
-          [Enter steps to reproduce:]
+                       [Enter steps to reproduce:]
 
-          1. ...
-          2. ...
+                       1. ...
+                       2. ...
 
-          **Atom**: #{atom.getVersion()} #{process.arch}
-          **Electron**: #{process.versions.electron}
-          **OS**: #{systemName}
-          **Thrown From**: #{packageMessage}
-          #{rootUserStatus}
+                       **Atom**: #{atom.getVersion()} #{process.arch}
+                       **Electron**: #{process.versions.electron}
+                       **OS**: #{systemName}
+                       **Thrown From**: #{packageMessage}
+                       #{rootUserStatus}
 
-          ### Stack Trace
+                       ### Stack Trace
 
-          #{message}
+                       #{message}
 
-          ```
-          At #{options.detail}
+                       ```
+                       At #{options.detail}
 
-          #{@normalizedStackPaths(options.stack)}
-          ```
+                       #{@normalizedStackPaths(options.stack)}
+                       ```
 
-          ### Commands
+                       ### Commands
 
-          #{CommandLogger.instance().getText()}
+                       #{CommandLogger.instance().getText()}
 
-          ### Non-Core Packages
+                       ### Non-Core Packages
 
-          ```
-          #{nonCorePackages.join('\n')}
-          ```
+                       ```
+                       #{nonCorePackages.join('\n')}
+                       ```
 
-          #{copyText}
-        """
+                       #{copyText}
+                     """
         resolve(@issueBody)
 
   normalizedStackPaths: (stack) =>
