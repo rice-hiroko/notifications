@@ -23,12 +23,13 @@ describe "Notifications", ->
         # Wrapped in Promise.resolve so this test continues to work on earlier versions of Atom
         Promise.resolve(atom.packages.deactivatePackage('notifications-plus'))
 
-      warning = new Notification('warning', 'Un-displayed warning')
-      error = new Notification('error', 'Displayed error')
-      error.setDisplayed(true)
+      runs ->
+        warning = new Notification('warning', 'Un-displayed warning')
+        error = new Notification('error', 'Displayed error')
+        error.setDisplayed(true)
 
-      atom.notifications.addNotification(error)
-      atom.notifications.addNotification(warning)
+        atom.notifications.addNotification(error)
+        atom.notifications.addNotification(warning)
 
       waitsForPromise ->
         atom.packages.activatePackage('notifications-plus')
