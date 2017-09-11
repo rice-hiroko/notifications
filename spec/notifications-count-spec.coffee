@@ -25,7 +25,9 @@ describe "Notifications Count", ->
 
   describe "when there are notifications before activation", ->
     beforeEach ->
-      atom.packages.deactivatePackage('notifications-plus')
+      waitsForPromise ->
+        # Wrapped in Promise.resolve so this test continues to work on earlier versions of Atom
+        Promise.resolve(atom.packages.deactivatePackage('notifications-plus'))
 
     it "displays counts notifications", ->
       warning = new Notification('warning', 'Un-displayed warning')
