@@ -51,7 +51,7 @@ describe "Notifications Count", ->
       generateFakeFetchResponses()
 
     it "will add the new-notification class for as long as the animation", ->
-      notificationsCountNumber = notificationsCountContainer.firstChild
+      notificationsCountNumber = notificationsCountContainer.firstChild.firstChild
       expect(notificationsCountNumber).not.toHaveClass 'new-notification'
       atom.notifications.addInfo('A message')
       expect(notificationsCountNumber).toHaveClass 'new-notification'
