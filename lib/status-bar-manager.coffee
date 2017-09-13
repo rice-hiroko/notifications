@@ -14,10 +14,12 @@ class StatusBarManager
     @number.textContent = @count
     @number.addEventListener 'animationend', (e) => @number.classList.remove('new-notification') if e.animationName is 'new-notification'
 
-    @element = document.createElement('span')
-    @element.classList.add('notifications-count')
+    @element = document.createElement('a')
+    @element.classList.add('notifications-count', 'inline-block')
     atom.tooltips.add(@element, title: "Notifications")
-    @element.appendChild(@number)
+    span = document.createElement('span')
+    span.appendChild(@number)
+    @element.appendChild(span)
     @element.addEventListener 'click', => atom.commands.dispatch(@element, "notifications-plus:toggle-log")
 
     lastNotification = null
