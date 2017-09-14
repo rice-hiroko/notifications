@@ -18,11 +18,7 @@ Notifications =
     CommandLogger.start()
     @subscriptions = new CompositeDisposable
 
-    atom.packages.disablePackage("notifications")
-    atom.packages.onDidActivateInitialPackages ->
-      atom.packages.disablePackage("notifications")
-    atom.packages.onDidActivatePackage (pkg) ->
-      atom.packages.disablePackage("notifications") if pkg is "notifications"
+    @disableNotificationsPackage()
 
     @addNotificationView(notification) for notification in atom.notifications.getNotifications()
     @subscriptions.add atom.notifications.onDidAddNotification (notification) => @addNotificationView(notification)
@@ -165,6 +161,13 @@ Notifications =
 
   statusBarService: (statusBar) ->
     @statusBarManager = new StatusBarManager(statusBar, @duplicateTimeDelay)
+
+  disableNotificationsPackage: ->
+    @subscriptions.add atom.config.observe "core.disabledPackages", (disabledPackages) ->
+      unless disabledPackages.includes("notification")
+        console.warn "Notifications package must be disabled for Notifications-Plus to work"
+        atom.packages.disablePackage("notifications")
+
 
 isCoreOrPackageStackTrace = (stack) ->
   StackTraceParser ?= require 'stacktrace-parser'
