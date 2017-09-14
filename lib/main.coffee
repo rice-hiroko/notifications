@@ -18,6 +18,11 @@ Notifications =
     CommandLogger.start()
     @subscriptions = new CompositeDisposable
 
+    atom.packages.onDidActivateInitialPackages ->
+      atom.packages.disablePackage("notifications")
+    atom.packages.onDidActivatePackage (pkg) ->
+      atom.packages.disablePackage("notifications") if pkg is "notifications"
+
     @addNotificationView(notification) for notification in atom.notifications.getNotifications()
     @subscriptions.add atom.notifications.onDidAddNotification (notification) => @addNotificationView(notification)
 
