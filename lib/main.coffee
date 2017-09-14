@@ -18,6 +18,7 @@ Notifications =
     CommandLogger.start()
     @subscriptions = new CompositeDisposable
 
+    atom.packages.disablePackage("notifications")
     atom.packages.onDidActivateInitialPackages ->
       atom.packages.disablePackage("notifications")
     atom.packages.onDidActivatePackage (pkg) ->
