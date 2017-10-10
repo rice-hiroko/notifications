@@ -1,3 +1,5 @@
+moment = require 'moment'
+
 module.exports =
 class StatusBarManager
   count: 0
@@ -16,11 +18,11 @@ class StatusBarManager
 
     @element = document.createElement('a')
     @element.classList.add('notifications-count', 'inline-block')
-    atom.tooltips.add(@element, title: "Notifications")
+    @tooltip = atom.tooltips.add(@element, title: 'Notifications')
     span = document.createElement('span')
     span.appendChild(@number)
     @element.appendChild(span)
-    @element.addEventListener 'click', => atom.commands.dispatch(@element, "notifications-plus:toggle-log")
+    @element.addEventListener 'click', => atom.commands.dispatch(@element, 'notifications-plus:toggle-log')
 
     lastNotification = null
     for notification in atom.notifications.getNotifications()
@@ -37,8 +39,13 @@ class StatusBarManager
   destroy: ->
     @tile.destroy()
     @tile = null
+    @tooltip.dispose()
+    @tooltip = null
 
   addNotification: (notification) ->
-    @element.setAttribute("last-type", notification.getType())
+    date = moment(notification.timestamp).format('LT')
+    @tooltip.dispose()
+    @tooltip = atom.tooltips.add(@element, title: "Last Notification #{date}")
+    @element.setAttribute('last-type', notification.getType())
     @number.textContent = ++@count
-    @number.classList.add("new-notification")
+    @number.classList.add('new-notification')
