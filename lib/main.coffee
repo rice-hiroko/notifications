@@ -166,7 +166,9 @@ Notifications =
     @subscriptions.add atom.config.observe "core.disabledPackages", (disabledPackages) ->
       unless disabledPackages.includes("notification")
         console.warn "Notifications package must be disabled for Notifications-Plus to work"
-        atom.packages.disablePackage("notifications")
+        notificationsPackage = atom.packages.disablePackage("notifications")
+        notificationsPackage?.mainModule?.isInitialized = true
+        notificationsPackage?.mainModule?.notificationsElement = document.createElement("div")
 
 
 isCoreOrPackageStackTrace = (stack) ->
