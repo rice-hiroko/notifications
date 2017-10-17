@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.0",
-    "marked": "^0.3.6",
+    "8fold-marked": "^0.3.8",
     "moment": "^2.18.1",
     "semver": "^5.4.1",
     "stacktrace-parser": "^0.1.3",
