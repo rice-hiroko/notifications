@@ -69,6 +69,10 @@ Notifications =
     @addNotificationsLogSubscriptions() if @notificationsLog?
     @subscriptions.add atom.workspace.addOpener (uri) => @createLog() if uri is NotificationsLog::getURI()
     @subscriptions.add atom.commands.add 'atom-workspace', 'notifications-plus:toggle-log', -> atom.workspace.toggle(NotificationsLog::getURI())
+    @subscriptions.add atom.commands.add 'atom-workspace', 'notifications-plus:clear-log', =>
+      atom.notifications.clear()
+      @notificationsLog?.clear()
+      @statusBarManager?.clear()
 
   deactivate: ->
     @subscriptions.dispose()

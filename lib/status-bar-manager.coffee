@@ -49,3 +49,10 @@ class StatusBarManager
     @element.setAttribute('last-type', notification.getType())
     @number.textContent = ++@count
     @number.classList.add('new-notification')
+
+  clear: ->
+    @count = 0
+    @number.textContent = @count
+    @element.removeAttribute 'last-type'
+    @tooltip.dispose()
+    @tooltip = atom.tooltips.add(@element, title: "Notifications")

@@ -97,6 +97,9 @@ module.exports = class NotificationsLog
 
     @subscriptions.add new Disposable -> logItem.destroy()
 
+  clear: ->
+    @list.innerHTML = ""
+
   onItemClick: (callback) ->
     @emitter.on 'item-clicked', callback
 
