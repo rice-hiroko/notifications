@@ -45,6 +45,13 @@ module.exports = class NotificationsLog
       @subscriptions.add atom.tooltips.add(button, {title: "Toggle #{type} notifications"})
       header.appendChild(button)
 
+
+    button = document.createElement('button')
+    button.classList.add('notifications-clear-log', 'btn', 'icon', 'icon-dash')
+    button.addEventListener 'click', (e) -> atom.commands.dispatch(atom.views.getView(atom.workspace), "notifications-plus:clear-log")
+    @subscriptions.add atom.tooltips.add(button, {title: "Clear notifications"})
+    header.appendChild(button)
+
     lastNotification = null
     for notification in atom.notifications.getNotifications()
       if lastNotification?
