@@ -1,3 +1,7 @@
+## 0.69.11
+* Add `notifications-plus:clear-log` command to clear the notifications log
+* Add button on top right of log to clear the notifications log
+
 ## 0.69.10
 * Use [8fold-marked](https://www.npmjs.com/package/8fold-marked) to [prevent ReDoS in markdown](https://github.com/chjj/marked/issues/937)
 
