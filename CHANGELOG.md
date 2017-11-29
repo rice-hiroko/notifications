@@ -1,3 +1,6 @@
+## 0.69.12
+* Security Fix: Update `moment` to prevent redos [moment/moment#4163](https://github.com/moment/moment/issues/4163)
+
 ## 0.69.11
 * Add `notifications-plus:clear-log` command to clear the notifications log
 * Add button on top right of log to clear the notifications log
